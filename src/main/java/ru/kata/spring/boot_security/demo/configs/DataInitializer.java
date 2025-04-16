@@ -1,8 +1,7 @@
 package ru.kata.spring.boot_security.demo.configs;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -14,32 +13,32 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 import java.util.Set;
 
 @Component
-public class DataInitializer  {
+public class DataInitializer {
 
     @Bean
     public CommandLineRunner initUsers(UserService userService,
                                        PasswordEncoder passwordEncoder,
                                        RoleRepository roleRepository) {
         return args -> {
-            // Создаем роли, если их нет
+
 
             Role adminRole = createRoleIfNotExists("ROLE_ADMIN", roleRepository);
             Role userRole = createRoleIfNotExists("ROLE_USER", roleRepository);
 
-            // Создаем администратора
+
             createUserIfNotExists(
                     "admin",
-                    "admin",  // пароль будет закодирован
+                    "admin",
                     "Adminov",
-                    Set.of(adminRole, userRole),  // админ может иметь и роль пользователя
+                    Set.of(adminRole, userRole),
                     userService,
                     passwordEncoder
             );
 
-            // Создаем обычного пользователя
+
             createUserIfNotExists(
                     "user",
-                    "user",  // пароль будет закодирован
+                    "user",
                     "Userov",
                     Set.of(userRole),
                     userService,
@@ -66,7 +65,7 @@ public class DataInitializer  {
         if (userService.findByUsername(username) == null) {
             User user = new User();
             user.setUsername(username);
-            user.setPassword(passwordEncoder.encode(password));  // кодируем пароль
+            user.setPassword(passwordEncoder.encode(password));
             user.setLastName(lastName);
             user.setEnabled(true);
             user.setRoles(roles);

@@ -22,7 +22,7 @@ public class User implements UserDetails {
     @Column(name = "LASTNAME")
     private String lastName;
 
-    @Column( nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @Column
@@ -37,7 +37,8 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-    public User() {}
+    public User() {
+    }
 
     public User(String name, String lastName, String password) {
         this.username = name;
@@ -56,8 +57,6 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
-
-
 
 
     public String getLastName() {
@@ -94,7 +93,6 @@ public class User implements UserDetails {
                 ", lastName='" + lastName + '\'' +
                 '}';
     }
-
 
 
     @Override

@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -34,7 +33,7 @@ public class AdminController {
     @GetMapping
     public String adminPanel(Model model) {
         model.addAttribute("users", userService.findAll());
-            return "admin/indexlist";
+        return "admin/indexlist";
 
     }
 
@@ -46,7 +45,7 @@ public class AdminController {
     }
 
 
-        @GetMapping("/new")
+    @GetMapping("/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
 
@@ -69,7 +68,6 @@ public class AdminController {
     }
 
 
-
     @GetMapping("/edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         model.addAttribute("user", userService.findById(id));
@@ -79,12 +77,10 @@ public class AdminController {
     }
 
 
-
-
     @PostMapping("/update")
     public String updateUser(@RequestParam("id") Long id,
                              @ModelAttribute("user") User user,
-    @RequestParam(value = "selectedRoles", required = false) List <Long> roleIds) {
+                             @RequestParam(value = "selectedRoles", required = false) List<Long> roleIds) {
 
 
         if (roleIds != null) {
@@ -96,10 +92,6 @@ public class AdminController {
         userService.update(id, user);
         return "redirect:/admin";
     }
-
-
-
-
 
 
     @GetMapping("/delete")

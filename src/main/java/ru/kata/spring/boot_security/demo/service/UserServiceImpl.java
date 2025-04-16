@@ -1,9 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
 
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +18,6 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
@@ -44,9 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
-
-
-    public User findByUsername(String username){
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
@@ -55,13 +49,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found " ,username));
+            throw new UsernameNotFoundException(String.format("User '%s' not found ", username));
         }
 
 
-
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(),  mapRolesToAuthorities(user.getRoles()));
+                user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
 
 
@@ -80,7 +73,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
-
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
@@ -94,23 +86,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
-
-    // ПРИОРИТЕТНЫЙ РАБОЧИЙ МЕТОД
     @Override
     public void update(Long id, User user) {
 
 
-        if (!user.getPassword().equals(userRepository.getById(user.getId()).getPassword())){
+        if (!user.getPassword().equals(userRepository.getById(user.getId()).getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        if (user.getRoles() != null) {
-            user.setRoles(user.getRoles());
-    }
 
         userRepository.save(user);
     }
-
-
 
 
     @Override
@@ -120,7 +105,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 }
-
 
 
 
