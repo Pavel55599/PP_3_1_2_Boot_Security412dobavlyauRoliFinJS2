@@ -1,111 +1,98 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.model.Role;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public AdminController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
-    public String adminPanel(Model model) {
-        model.addAttribute("users", userService.findAll());
-        return "admin/indexlist";
-
+    public ModelAndView adminPanel() {
+        ModelAndView mav = new ModelAndView("admin/indexlist");
+        mav.addObject("users", userService.findAll());
+        return mav;
     }
-
 
     @GetMapping("/show")
-    public String showUser(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
-        return "admin/show";
+    public ModelAndView showUser(@RequestParam("id") Long id) {
+        ModelAndView mav = new ModelAndView("admin/show");
+        mav.addObject("user", userService.findById(id));
+        return mav;
     }
 
-
     @GetMapping("/new")
-    public String newUser(Model model) {
-        model.addAttribute("user", new User());
-
-        model.addAttribute("allRoles", roleService.getAllRoles());
-        return "admin/new";
+    public ModelAndView newUser() {
+        ModelAndView mav = new ModelAndView("admin/new");
+        mav.addObject("user", new User());
+        mav.addObject("allRoles", roleService.getAllRoles());
+        return mav;
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("user") User user,
-                             @RequestParam(value = "selectedRoles", required = false) Set<Long> selectedRoles) {
-        Set<Role> roles = new HashSet<>();
-        if (selectedRoles != null) {
-            for (Long roleId : selectedRoles) {
-                roles.add(roleService.getRoleById(roleId));
-            }
-        }
-        user.setRoles(roles);
-        userService.save(user);
-        return "redirect:/admin";
+    public ModelAndView createUser(@ModelAttribute("user") User user,
+                                   @RequestParam(value = "selectedRoles", required = false) Set<Long> selectedRoles) {
+        userService.saveUserWithRoles(user, selectedRoles);
+        return new ModelAndView("redirect:/admin");
     }
-
 
     @GetMapping("/edit")
-    public String editUser(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
-        model.addAttribute("allRoles", roleService.getAllRoles());
-
-        return "admin/edit";
+    public ModelAndView editUser(@RequestParam("id") Long id) {
+        ModelAndView mav = new ModelAndView("admin/edit");
+        mav.addObject("user", userService.findById(id));
+        mav.addObject("allRoles", roleService.getAllRoles());
+        return mav;
     }
-
 
     @PostMapping("/update")
-    public String updateUser(@RequestParam("id") Long id,
-                             @ModelAttribute("user") User user,
-                             @RequestParam(value = "selectedRoles", required = false) List<Long> roleIds) {
-
-
-        if (roleIds != null) {
-            Set<Role> roles = roleIds.stream().map(roleService::getRoleById).collect(Collectors.toSet());
-            user.setRoles(roles);
-            userService.save(user);
-        }
-
-        userService.update(id, user);
-        return "redirect:/admin";
+    public ModelAndView updateUser(@RequestParam("id") Long id,
+                                   @ModelAttribute("user") User user,
+                                   @RequestParam(value = "selectedRoles", required = false) List<Long> roleIds) {
+        userService.updateUserWithRoles(id, user, roleIds);
+        return new ModelAndView("redirect:/admin");
     }
 
-
     @GetMapping("/delete")
-    public String showDeleteForm(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
-        return "admin/delete";
+    public ModelAndView showDeleteForm(@RequestParam("id") Long id) {
+        ModelAndView mav = new ModelAndView("admin/delete");
+        mav.addObject("user", userService.findById(id));
+        return mav;
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@RequestParam("id") Long id) {
+    public ModelAndView deleteUser(@RequestParam("id") Long id) {
         userService.delete(id);
-        return "redirect:/admin";
+        return new ModelAndView("redirect:/admin");
     }
 }
+
+
+
 
 
 
