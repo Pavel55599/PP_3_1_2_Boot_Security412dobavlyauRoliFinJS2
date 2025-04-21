@@ -1,15 +1,15 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
@@ -26,6 +26,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
+
     public Role getRoleById(Long id) {
         Role role = roleRepository.findById(id);
         if (role == null) {

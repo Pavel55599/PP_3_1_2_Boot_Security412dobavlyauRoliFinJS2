@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.model;
 
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -55,6 +56,7 @@ public class User implements UserDetails {
         this.lastName = lastName;
         this.password = password;
     }
+
 
     public Long getId() {
         return id;

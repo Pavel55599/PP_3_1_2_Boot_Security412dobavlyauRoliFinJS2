@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
@@ -35,7 +36,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                            RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-
         this.roleService = roleService;
 
     }
@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void save(User user) {
         if (user.getPassword() == null || !user.getPassword().startsWith("$2a$")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -77,6 +78,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
+    @Transactional
     public void saveUserWithRoles(User user, Set<Long> roleIds) {
         if (user.getPassword() == null || !user.getPassword().startsWith("$2a$")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -111,6 +113,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void update(Long id, User user) {
 
         if (!user.getPassword().equals(userRepository.findById(user.getId()).getPassword())) {
@@ -123,6 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
+    @Transactional
     public void updateUserWithRoles(Long id, User updatedUser, List<Long> roleIds) {
 
         User existingUser = userRepository.findById(id);
@@ -130,9 +134,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
 
-        existingUser.setUsername(updatedUser.getUsername());
-        existingUser.setLastName(updatedUser.getLastName());
-        existingUser.setEnabled(updatedUser.isEnabled());
+        BeanUtils.copyProperties(updatedUser, existingUser, "id", "password", "roles");
+
 
         if (updatedUser.getPassword() != null
                 && !updatedUser.getPassword().isEmpty()
@@ -157,6 +160,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
+    @Transactional
     public void delete(Long id) {
         userRepository.delete(id);
 
