@@ -3,7 +3,6 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -22,19 +21,12 @@ public class UserController {
 
     @GetMapping
     public ModelAndView userPanel(Principal principal) {
-        ModelAndView mav = new ModelAndView("user/personal");
-        User currentUser = userService.findByUsername(principal.getName());
-        mav.addObject("user", currentUser);
-        return mav;
-    }
-
-    @GetMapping("/showuser")
-    public ModelAndView showUser(@RequestParam("id") Long id, Principal principal) {
         ModelAndView mav = new ModelAndView("user/showuser");
         User currentUser = userService.findByUsername(principal.getName());
         mav.addObject("user", currentUser);
         return mav;
     }
+
 }
 
 
