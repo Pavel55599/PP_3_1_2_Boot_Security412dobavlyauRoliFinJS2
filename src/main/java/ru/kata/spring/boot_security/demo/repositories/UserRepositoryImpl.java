@@ -1,10 +1,12 @@
 package ru.kata.spring.boot_security.demo.repositories;
 
+import org.hibernate.annotations.BatchSize;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -55,17 +57,13 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+
     @Override
     public List<User> findAll() {
-        TypedQuery<User> query = entityManager.createQuery(
-                "SELECT u FROM User u", User.class);
-        return query.getResultList();
+        System.err.println("findAll");
+        return entityManager.createQuery(
+                "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles",
+                User.class).getResultList();
     }
+
 }
-
-
-
-
-
-
-

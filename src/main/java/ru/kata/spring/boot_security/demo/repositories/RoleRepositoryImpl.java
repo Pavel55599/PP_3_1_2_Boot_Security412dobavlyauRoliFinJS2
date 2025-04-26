@@ -1,6 +1,8 @@
 package ru.kata.spring.boot_security.demo.repositories;
 
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.Role;
 
@@ -32,10 +34,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public List<Role> findAll() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Role> cq = cb.createQuery(Role.class);
-        cq.from(Role.class);
-        return entityManager.createQuery(cq).getResultList();
+        return entityManager.createQuery("from Role", Role.class).getResultList();
     }
 
 

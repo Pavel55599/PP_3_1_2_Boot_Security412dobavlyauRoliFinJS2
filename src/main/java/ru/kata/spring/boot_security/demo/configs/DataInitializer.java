@@ -17,6 +17,7 @@ import java.util.Set;
 @Transactional
 public class DataInitializer {
 
+
     @Bean
     public CommandLineRunner initUsers(UserService userService,
                                        PasswordEncoder passwordEncoder,

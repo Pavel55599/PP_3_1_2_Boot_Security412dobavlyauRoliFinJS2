@@ -87,16 +87,6 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public void addRole(Role role) {
-        this.roles.add(role);
-        role.getUsers().add(this);
-    }
-
-    public void removeRole(Role role) {
-        this.roles.remove(role);
-        role.getUsers().remove(this);
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -135,7 +125,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username; // Используем name как username
+        return username;
     }
 
     @Override
