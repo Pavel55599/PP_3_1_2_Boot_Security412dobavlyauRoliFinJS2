@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.Set;
@@ -21,12 +21,12 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner initUsers(UserService userService,
                                        PasswordEncoder passwordEncoder,
-                                       RoleRepository roleRepository) {
+                                       RoleService roleService) {
         return args -> {
 
 
-            Role adminRole = createRoleIfNotExists("ROLE_ADMIN", roleRepository);
-            Role userRole = createRoleIfNotExists("ROLE_USER", roleRepository);
+            Role adminRole = createRoleIfNotExists("ROLE_ADMIN", roleService);
+            Role userRole = createRoleIfNotExists("ROLE_USER", roleService);
 
 
             createUserIfNotExists(
@@ -50,11 +50,11 @@ public class DataInitializer {
         };
     }
 
-    private Role createRoleIfNotExists(String roleName, RoleRepository roleRepository) {
-        Role role = roleRepository.findByName(roleName);
+    private Role createRoleIfNotExists(String roleName, RoleService roleService) {
+        Role role = roleService.findByName(roleName);
         if (role == null) {
             role = new Role(roleName);
-            roleRepository.save(role);
+            roleService.save(role);
         }
         return role;
     }
@@ -77,6 +77,8 @@ public class DataInitializer {
     }
 
 }
+
+
 
 
 

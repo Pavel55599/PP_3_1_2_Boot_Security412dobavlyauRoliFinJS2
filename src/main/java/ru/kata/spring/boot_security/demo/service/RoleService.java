@@ -7,8 +7,13 @@ import java.util.List;
 
 @Service
 public interface RoleService {
+
+    Role save(Role role);
+
     List<Role> getAllRoles();
 
     Role getRoleById(Long id);
 
+
+    Role findByName(String name);
 }

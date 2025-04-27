@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.repositories;
 
 import org.hibernate.annotations.BatchSize;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
@@ -43,11 +44,6 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-
-    @Override
-    public void update(User user) {
-        entityManager.merge(user);
-    }
 
     @Override
     public void delete(Long id) {

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface RoleRepository {
+
     Role save(Role role);
 
     Role findById(Long id);
@@ -16,4 +17,5 @@ public interface RoleRepository {
     List<Role> findAll();
 
     Role findByName(String name);
+
 }
