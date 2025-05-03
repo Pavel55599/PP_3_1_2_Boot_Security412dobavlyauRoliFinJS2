@@ -11,13 +11,13 @@ public interface UserService {
 
     void save(User user);
 
-    void saveUserWithRoles(User user, Set<Long> roleIds);
+    User saveUserWithRoles(User user, Set<Long> roleIds);
 
     User findById(Long id);
 
     List<User> findAll();
 
-    void updateUserWithRoles(Long id, User user, List<Long> roleIds);
+    User updateUserWithRoles(Long id, User user, List<Long> roleIds);
 
     void delete(Long id);
 

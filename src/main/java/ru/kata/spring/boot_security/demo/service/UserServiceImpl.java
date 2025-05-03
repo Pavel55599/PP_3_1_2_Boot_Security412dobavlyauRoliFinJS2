@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void saveUserWithRoles(User user, Set<Long> roleIds) {
+    public User saveUserWithRoles(User user, Set<Long> roleIds) {
         if (user.getPassword() == null || !user.getPassword().startsWith("$2a$")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
@@ -97,6 +97,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         userRepository.save(user);
+        return user;
     }
 
 
@@ -115,7 +116,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void updateUserWithRoles(Long id, User updatedUser, List<Long> roleIds) {
+    public User updateUserWithRoles(Long id, User updatedUser, List<Long> roleIds) {
 
         User existingUser = userRepository.findById(id);
         if (existingUser == null) {
@@ -144,6 +145,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         userRepository.save(existingUser);
+        return existingUser;
     }
 
 
