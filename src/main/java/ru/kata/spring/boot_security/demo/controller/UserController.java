@@ -40,48 +40,6 @@ public class UserController {
 
 
 
-//
-//    @GetMapping
-//    public ResponseEntity<List<User>> getAllUsers() {
-//        List<User> users = userService.findAll();
-//        return ResponseEntity.ok(users);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-//        User user = userService.findById(id);
-//        return ResponseEntity.ok(user);
-//    }
-
-    // Другие REST методы (POST, PUT, DELETE) по необходимости
-
-
-
-
-//@RestController
-//@RequestMapping("/api/user")
-////@CrossOrigin(origins = "http://localhost:8080")
-//public class UserController {
-//    private final UserService userService;
-//
-//    public UserController(UserService userService) {
-//        this.userService = userService;
-//    }
-//
-//    //@GetMapping
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<User> allUsers() {
-//        System.err.println("GET /api/user - Запрос всех пользователей");
-//        return userService.findAll();
-//    }
-//
-//    //@GetMapping("/{id}")
-//    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public User getUserById(@PathVariable Long id) {
-//        System.err.println("GET /api/user/" + id + " - Запрос пользователя");
-//        return userService.findById(id);
-//    }
-//}
 
 
 
