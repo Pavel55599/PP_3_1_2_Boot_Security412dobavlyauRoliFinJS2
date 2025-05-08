@@ -29,7 +29,13 @@ public class DataInitializer {
             Role userRole = createRoleIfNotExists("ROLE_USER", roleService);
 
 
-            createUserIfNotExists("admin", "admin", "Adminov", Set.of(adminRole, userRole), userService, passwordEncoder);
+            createUserIfNotExists(
+                    "admin",
+                    "admin",
+                    "Adminov",
+                    Set.of(adminRole, userRole),
+                    userService,
+                    passwordEncoder);
 
 
             createUserIfNotExists(
