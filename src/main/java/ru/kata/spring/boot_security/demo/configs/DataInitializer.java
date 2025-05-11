@@ -74,7 +74,6 @@ public class DataInitializer {
             userService.save(user);
         }
     }
-
 }
 
 

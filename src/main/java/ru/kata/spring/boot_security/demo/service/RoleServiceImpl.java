@@ -6,7 +6,11 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,18 +37,27 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public Role getRoleById(Long id) {
-        Role role = roleRepository.findById(id);
-        if (role == null) {
-            throw new EntityNotFoundException("Role not found with id: " + id);
-        }
-        return role;
-    }
-
-    @Override
     public Role findByName(String name) {
         return roleRepository.findByName(name);
 
+
     }
 
+    //  новый метод , перенес создание списка в этот метод
+    @Override
+    public Set<Role> getRolesByIds(Set<Long> roleIds) {
+        if (roleIds == null || roleIds.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        Set<Role> roles = new HashSet<>();
+        for (Long roleId : roleIds) {
+            roles.add(roleRepository.findById(roleId));
+        }
+        return roles;
+    }
 }
+
+
+
+

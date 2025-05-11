@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    // @Transactional
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
 
@@ -50,7 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         User user = findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User '%s' not found ", username));
@@ -77,7 +76,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     }
 
-
     @Override
     @Transactional
     public User saveUserWithRoles(User user, Set<Long> roleIds) {
@@ -87,18 +85,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setEnabled(user.isEnabled());
 
+        // Используем новый метод из RoleService, логика создания списка осталась в RoleService, здесь используем только метод getRolesByIds
         if (roleIds != null && !roleIds.isEmpty()) {
-            Set<Role> roles = roleIds.stream()
-                    .map(roleId -> {
-                        Role role = roleService.getRoleById(roleId);
-                        return role;
-                    })
-                    .collect(Collectors.toSet());
+            Set<Role> roles = roleService.getRolesByIds(roleIds);
             user.setRoles(roles);
         }
 
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);//сразу вернул
     }
 
 
@@ -114,11 +107,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     }
 
-
     @Override
     @Transactional
     public User updateUserWithRoles(Long id, User updatedUser, List<Long> roleIds) {
-
         User existingUser = userRepository.findById(id);
         if (existingUser == null) {
             throw new EntityNotFoundException("User not found with id: " + id);
@@ -126,27 +117,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         BeanUtils.copyProperties(updatedUser, existingUser, "id", "password", "roles");
 
-
         if (updatedUser.getPassword() != null
                 && !updatedUser.getPassword().isEmpty()
                 && !updatedUser.getPassword().equals(existingUser.getPassword())) {
             existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
 
+        // Используем новый метод из RoleService, логика создания списка осталась в RoleService, здесь используем только метод getRolesByIds
         if (roleIds != null) {
-            Set<Role> managedRoles = new HashSet<>();
-            for (Long roleId : roleIds) {
-                Role role = roleService.getRoleById(roleId);
-                if (role == null) {
-                    throw new EntityNotFoundException("Role not found with id: " + roleId);
-                }
-                managedRoles.add(role);
-            }
-            existingUser.setRoles(managedRoles);
+            existingUser.setRoles(roleService.getRolesByIds(new HashSet<>(roleIds)));
         }
-
-        userRepository.save(existingUser);
-        return existingUser;
+        return userRepository.save(existingUser);//сразу вернул
     }
 
 
@@ -156,10 +137,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepository.delete(id);
 
     }
-
 }
-
-
 
 
 

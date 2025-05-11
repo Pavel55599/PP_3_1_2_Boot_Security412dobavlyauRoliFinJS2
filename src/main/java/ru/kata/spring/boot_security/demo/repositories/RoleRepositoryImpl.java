@@ -8,10 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 
 @Repository
@@ -38,11 +42,9 @@ public class RoleRepositoryImpl implements RoleRepository {
         return entityManager.createQuery("from Role", Role.class).getResultList();
     }
 
-
     @Override
     public Role findByName(String name) {
         List<Role> allRoles = findAll();
-
         for (Role role : allRoles) {
             if (role.getName().equals(name)) {
                 return role;
@@ -50,5 +52,4 @@ public class RoleRepositoryImpl implements RoleRepository {
         }
         return null;
     }
-
 }

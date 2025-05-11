@@ -1,13 +1,11 @@
 package ru.kata.spring.boot_security.demo.repositories;
 
-import org.hibernate.annotations.BatchSize;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByUsername(String username) {
-        try {
+        try {//сразу вернул
             TypedQuery<User> query = entityManager.createQuery(
                     "SELECT u FROM User u WHERE u.username = :username", User.class);
             query.setParameter("username", username);
@@ -29,19 +27,30 @@ public class UserRepositoryImpl implements UserRepository {
             return null;
         }
     }
-
+    // добавил LEFT JOIN FETCH
     @Override
     public User findById(Long id) {
-        return entityManager.find(User.class, id);
+        System.err.println("findById");
+        try {//сразу вернул результат
+            return entityManager.createQuery(
+                            "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id",
+                            User.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         if (user.getId() == null) {
             entityManager.persist(user);
         } else {
             entityManager.merge(user);
         }
+        return user;
     }
 
 
@@ -57,9 +66,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> findAll() {
         System.err.println("findAll");
-        return entityManager.createQuery(
+        return entityManager.createQuery(//сразу вернул
                 "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles",
                 User.class).getResultList();
     }
-
 }
