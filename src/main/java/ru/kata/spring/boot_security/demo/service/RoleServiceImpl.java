@@ -5,19 +5,17 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
-
 
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
@@ -37,10 +35,8 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public Role findByName(String name) {
+    public Optional<Role> findByName(String name) {
         return roleRepository.findByName(name);
-
-
     }
 
     @Override
@@ -51,12 +47,11 @@ public class RoleServiceImpl implements RoleService {
 
         Set<Role> roles = new HashSet<>();
         for (Long roleId : roleIds) {
-            roles.add(roleRepository.findById(roleId));
+            roleRepository.findById(roleId).ifPresent(roles::add);
         }
         return roles;
     }
 }
-
 
 
 

@@ -1,21 +1,13 @@
 package ru.kata.spring.boot_security.demo.repositories;
 
 
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 
 @Repository
@@ -32,10 +24,9 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Role findById(Long id) {
-        return entityManager.find(Role.class, id);
+    public Optional<Role> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(Role.class, id));
     }
-
 
     @Override
     public List<Role> findAll() {
@@ -43,13 +34,13 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Role findByName(String name) {
-        List<Role> allRoles = findAll();
-        for (Role role : allRoles) {
+    public Optional<Role> findByName(String name) {
+        List<Role> roles = findAll();
+        for (Role role : roles) {
             if (role.getName().equals(name)) {
-                return role;
+                return Optional.of(role);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

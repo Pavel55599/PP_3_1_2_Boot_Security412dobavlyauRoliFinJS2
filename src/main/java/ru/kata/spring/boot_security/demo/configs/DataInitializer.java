@@ -11,6 +11,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -50,12 +51,12 @@ public class DataInitializer {
     }
 
     private Role createRoleIfNotExists(String roleName, RoleService roleService) {
-        Role role = roleService.findByName(roleName);
-        if (role == null) {
-            role = new Role(roleName);
-            roleService.save(role);
+        Optional<Role> role = roleService.findByName(roleName);
+        if (role.isEmpty()) {
+            role = Optional.of(new Role(roleName));
+            roleService.save(role.orElse(null));
         }
-        return role;
+        return role.orElse(null);
     }
 
     private void createUserIfNotExists(String username,

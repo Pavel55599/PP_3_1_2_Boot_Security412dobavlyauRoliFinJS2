@@ -5,12 +5,13 @@ import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository {
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
-    User findById(Long id);
+    Optional<User> findById(Long id);
 
     User save(User user);
 

@@ -18,6 +18,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,24 +42,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
 
     }
 
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) {
-        User user = findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found ", username));
-        }
+        User user = findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format("User '%s' not found", username)
+                ));
+
         user.getRoles().size();
         return user;
-
     }
-
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName()))
@@ -72,8 +71,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userRepository.save(user);
-
-
     }
 
     @Override
@@ -95,7 +92,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public User findById(Long id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
 
     }
@@ -109,32 +106,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public User updateUserWithRoles(Long id, User updatedUser, Set<Long> roleIds) {
-        User existingUser = userRepository.findById(id);
-        if (existingUser == null) {
-            throw new EntityNotFoundException("User not found with id: " + id);
-        }
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+
 
         BeanUtils.copyProperties(updatedUser, existingUser, "id", "password", "roles");
 
         if (updatedUser.getPassword() != null
                 && !updatedUser.getPassword().isEmpty()
-                && !updatedUser.getPassword().equals(existingUser.getPassword())) {
+                && !passwordEncoder.matches(updatedUser.getPassword(), existingUser.getPassword())) {
             existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
-
 
         if (roleIds != null) {
             existingUser.setRoles(roleService.getRolesByIds(new HashSet<>(roleIds)));
         }
+
         return userRepository.save(existingUser);
     }
-
 
     @Override
     @Transactional
     public void delete(Long id) {
         userRepository.delete(id);
-
     }
 }
 

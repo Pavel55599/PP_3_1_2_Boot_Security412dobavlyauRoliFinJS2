@@ -4,10 +4,9 @@ import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -16,21 +15,20 @@ public class UserRepositoryImpl implements UserRepository {
     private EntityManager entityManager;
 
     @Override
-    public User findByUsername(String username) {
-        return entityManager
+    public Optional<User> findByUsername(String username) {
+        return Optional.ofNullable(entityManager
                 .createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter("username", username).getSingleResult();
+                .setParameter("username", username).getSingleResult());
     }
 
 
-
     @Override
-    public User findById(Long id) {
-        return entityManager.createQuery(
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(entityManager.createQuery(
                         "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id",
                         User.class)
                 .setParameter("id", id)
-                .getSingleResult();
+                .getSingleResult());
     }
 
 
