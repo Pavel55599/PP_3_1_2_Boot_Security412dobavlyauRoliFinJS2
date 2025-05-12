@@ -43,7 +43,6 @@ public class RoleServiceImpl implements RoleService {
 
     }
 
-    //  новый метод , перенес создание списка в этот метод
     @Override
     public Set<Role> getRolesByIds(Set<Long> roleIds) {
         if (roleIds == null || roleIds.isEmpty()) {

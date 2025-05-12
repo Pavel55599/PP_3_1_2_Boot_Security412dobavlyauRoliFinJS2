@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User '%s' not found ", username));
         }
-        user.getRoles().size(); // Это "трюк" для загрузки ленивой коллекции
+        user.getRoles().size();
         return user;
 
     }
@@ -85,13 +85,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setEnabled(user.isEnabled());
 
-        // Используем новый метод из RoleService, логика создания списка осталась в RoleService, здесь используем только метод getRolesByIds
         if (roleIds != null && !roleIds.isEmpty()) {
             Set<Role> roles = roleService.getRolesByIds(roleIds);
             user.setRoles(roles);
         }
 
-        return userRepository.save(user);//сразу вернул
+        return userRepository.save(user);
     }
 
 
@@ -123,11 +122,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
 
-        // Используем новый метод из RoleService, логика создания списка осталась в RoleService, здесь используем только метод getRolesByIds
+
         if (roleIds != null) {
             existingUser.setRoles(roleService.getRolesByIds(new HashSet<>(roleIds)));
         }
-        return userRepository.save(existingUser);//сразу вернул
+        return userRepository.save(existingUser);
     }
 
 
