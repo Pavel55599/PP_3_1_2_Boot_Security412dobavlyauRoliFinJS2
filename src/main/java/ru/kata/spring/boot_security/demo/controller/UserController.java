@@ -32,10 +32,8 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<User> getCurrentUser(Principal principal) {
-        User currentUser = userService.findByUsername(principal.getName());
-        return ResponseEntity.ok(currentUser);
+        return ResponseEntity.ok(userService.findByUsername(principal.getName()));
     }
-
 }
 
 

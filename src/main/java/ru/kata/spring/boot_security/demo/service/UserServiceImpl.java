@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public User updateUserWithRoles(Long id, User updatedUser, List<Long> roleIds) {
+    public User updateUserWithRoles(Long id, User updatedUser, Set<Long> roleIds) {
         User existingUser = userRepository.findById(id);
         if (existingUser == null) {
             throw new EntityNotFoundException("User not found with id: " + id);

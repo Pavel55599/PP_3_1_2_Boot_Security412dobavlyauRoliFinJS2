@@ -55,18 +55,18 @@ public class AdminController {
     @PostMapping
     public ResponseEntity<User> createUser(
             @RequestBody User user,
-            @RequestParam(value = "selectedRoles", required = false) Set<Long> selectedRoles) {
-        User savedUser = userService.saveUserWithRoles(user, selectedRoles);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+            @RequestParam(value = "selectedRoles", required = false) Set<Long> roleIds) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUserWithRoles(user, roleIds));
+
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
             @RequestBody User user,
-            @RequestParam(value = "selectedRoles", required = false) List<Long> roleIds) {
-        User updatedUser = userService.updateUserWithRoles(id, user, roleIds);
-        return ResponseEntity.ok(updatedUser);
+            @RequestParam(value = "selectedRoles", required = false) Set<Long> roleIds) {
+        return ResponseEntity.ok(userService.updateUserWithRoles(id, user, roleIds));
     }
 
     @DeleteMapping("/{id}")
